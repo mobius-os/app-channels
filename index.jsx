@@ -293,7 +293,11 @@ function Activity({ token, channel }) {
   useEffect(() => {
     let live = true
     channelActivity(token, channel.id)
-      .then((rows) => { if (live) setEntries(Array.isArray(rows) ? rows : []) })
+      .then((rows) => {
+        if (!live) return
+        setEntries(Array.isArray(rows) ? rows : [])
+        setFailed(false)
+      })
       .catch(() => { if (live) setFailed(true) })
     return () => { live = false }
   }, [token, channel.id, channel.lastSentAt])

@@ -3,7 +3,8 @@
 // The real app in headless Chromium against a fake server inside the page:
 // nothing leaves the browser (every request is answered by a stub, and CSP and
 // network blocking stand behind it). Covers what only a mounted channel shows:
-// changes whose replies come back in reverse order. Rolldown and React come
+// changes whose replies come back in reverse order, and Recent recovering from
+// a failed load without the channel being reopened. Rolldown and React come
 // from the Möbius shell's installed frontend, as when Möbius builds the app.
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
@@ -80,6 +81,14 @@ window.runChecks = async () => {
   try {
     if (!await until(() => document.querySelector('.ch-row'))) throw new Error('the channel list never loaded')
     document.querySelector('.ch-row').click()
+
+    // Recent fails to load, then a test message is sent and the reload works.
+    check('Recent shows the failed load', await until(() => text().includes('Recent sends couldn’t be loaded.')))
+    server.activityFails = false
+    button('Send test').click()
+    const recovered = await until(() => text().includes('Test message from Möbius') && !text().includes('couldn’t be loaded'))
+    check('Recent recovers without reopening the channel', recovered,
+      text().includes('couldn’t be loaded') ? 'still says the sends couldn’t be loaded' : '')
 
     // Include message text on, then off; every reply is released newest first.
     if (!await until(() => toggle('Include message text'))) throw new Error('the channel never opened')
