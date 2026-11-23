@@ -9,7 +9,7 @@ import { Plus } from '@openai/apps-sdk-ui/components/Icon'
 import { CSS } from './theme.js'
 import { SERVICES, SERVICE, ServiceIcon, detectKind } from './services.jsx'
 import {
-  addChannel, channelActivity, listApps, listChannels, removeChannel, testChannel, updateChannel,
+  addChannel, changesPending, channelActivity, listApps, listChannels, removeChannel, testChannel, updateChannel,
 } from './api.js'
 
 /* ── small helpers ─────────────────────────────────────────────────────── */
@@ -354,7 +354,9 @@ function ChannelPanel({ channel, apps, social, token, appId, onChanged, setNotic
     } catch {
       setNotice({ tone: 'bad', text: `Couldn’t change ${channel.label}. Try again.` })
     }
-    await onChanged()
+    // Changes go out one at a time; reloading between them would briefly show
+    // an older setting, so read the saved state once the last one is done.
+    if (!changesPending(channel.id)) await onChanged()
   }
 
   const remove = async () => {

@@ -41,7 +41,29 @@ const one = (id) => `/api/channels/${encodeURIComponent(id)}`
 
 export const listChannels = (token) => request(token, '/api/channels')
 export const addChannel = (token, payload) => request(token, '/api/channels', { method: 'POST', body: payload })
-export const updateChannel = (token, id, payload) => request(token, one(id), { method: 'PATCH', body: payload })
+
+// The server applies each change to a channel as it arrives, so two in flight
+// can land in reverse and keep the older choice (such as sharing message
+// text). Changes to one channel therefore go out one at a time, in the order
+// they were made; a failed one does not hold up the next.
+const writes = new Map() // channel id → { tail, count }
+
+export function updateChannel(token, id, payload) {
+  const queue = writes.get(id) || { tail: Promise.resolve(), count: 0 }
+  writes.set(id, queue)
+  queue.count += 1
+  const write = queue.tail.then(() => request(token, one(id), { method: 'PATCH', body: payload }))
+  queue.tail = write.catch(() => {})
+  const done = () => {
+    queue.count -= 1
+    if (!queue.count && writes.get(id) === queue) writes.delete(id)
+  }
+  write.then(done, done)
+  return write
+}
+
+/** True while a change to this channel is still waiting or on its way. */
+export const changesPending = (id) => writes.has(id)
 export const removeChannel = (token, id) => request(token, one(id), { method: 'DELETE' })
 export const channelActivity = (token, id) => request(token, `${one(id)}/activity`)
 // The test links back to this app, so a tap in Slack lands on Channels.

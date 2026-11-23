@@ -26,3 +26,12 @@ seeing a link.
 - Per channel: health (last delivery or the service's error), both feeds,
   recent sends (titles and outcomes only), send test, replace link, remove.
 - A skill (`channels.md`) that tells agents how to post to a channel.
+
+## Tests
+
+`npm test` runs the request helpers' tests with Node, then the app itself in
+headless Chromium against a fake server (`test/channels-browser.mjs`). The
+browser test builds with the Möbius shell's own Rolldown and React: on a
+Möbius host it finds them, elsewhere set `MOBIUS_FRONTEND_NODE_MODULES` to a
+Möbius checkout's `frontend/node_modules`. `--screenshots DIR` also saves
+what each width shows at the end.
