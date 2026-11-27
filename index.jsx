@@ -154,8 +154,8 @@ function feedTags(channel, appNames) {
 /* ── link entry, shared by add and replace ─────────────────────────────── */
 
 /** A link being typed. `emptyKind` shapes the placeholder; a pasted link no
- * service claims counts as `otherKind` (the chosen tile when adding; a
- * generic webhook when replacing, as the server decides). */
+ * service claims counts as `otherKind` (the chosen tile when adding; see
+ * ReplaceLink for replacing). */
 function useLink(emptyKind, otherKind = emptyKind) {
   const [value, setValue] = useState('')
   const url = value.trim()
@@ -257,7 +257,11 @@ function GuidedAdd({ apps, social, token, onDone, onCancel }) {
 /* ── one channel, expanded ─────────────────────────────────────────────── */
 
 function ReplaceLink({ channel, token, onDone, onCancel }) {
-  const link = useLink(channel.kind, 'webhook')
+  // A self-hosted ntfy server looks like any webhook, so a link no service
+  // claims keeps an ntfy or webhook channel's kind; a Slack or Discord channel
+  // given such a link becomes a webhook.
+  const keepsKind = channel.kind === 'ntfy' || channel.kind === 'webhook'
+  const link = useLink(channel.kind, keepsKind ? channel.kind : 'webhook')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const id = `ch-replace-${channel.id}`
@@ -267,7 +271,7 @@ function ReplaceLink({ channel, token, onDone, onCancel }) {
     setBusy(true)
     setError('')
     try {
-      await updateChannel(token, channel.id, { url: link.url })
+      await updateChannel(token, channel.id, { url: link.url, kind: link.kind })
       onDone()
     } catch (err) {
       setError(err.message || 'That link could not be saved.')
