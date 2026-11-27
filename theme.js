@@ -24,7 +24,7 @@ export const CSS = `
 
 .ch-btn { min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent;
   font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
-  background: var(--accent-fill, var(--accent)); color: var(--accent-fg, #fff);
+  background: var(--accent-fill, var(--accent)); color: var(--accent-fg);
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .ch-btn:hover:not(:disabled) { background: var(--accent-fill-hover, var(--accent-fill, var(--accent))); }
 .ch-btn:disabled { opacity: 0.5; cursor: default; }
@@ -32,7 +32,7 @@ export const CSS = `
 .ch-btn--quiet:hover:not(:disabled) { background: var(--surface-2); }
 .ch-btn--danger { background: transparent; color: var(--danger-text, var(--danger)); border-color: var(--border); }
 .ch-btn--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--danger) 10%, transparent); }
-.ch-btn--danger-fill { background: var(--danger-fill, var(--danger)); color: #fff; }
+.ch-btn--danger-fill { background: var(--danger-fill, var(--danger)); color: var(--accent-fg); }
 .ch-btn:focus-visible, .ch-row:focus-visible, .ch-tile:focus-visible, .ch-seg button:focus-visible,
 .ch-chip:focus-visible, .ch-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .ch-actions { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -54,11 +54,11 @@ export const CSS = `
 .ch-tag--off { color: var(--muted); }
 .ch-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px;
   vertical-align: 1px; background: var(--muted); }
-.ch-dot--ok { background: var(--green, #2fa866); }
+.ch-dot--ok { background: var(--green); }
 .ch-dot--bad { background: var(--danger); }
 .ch-bad { color: var(--danger-text, var(--danger)); }
 .ch-badge { flex: none; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600;
-  background: var(--danger-fill, var(--danger)); color: #fff; }
+  background: var(--danger-fill, var(--danger)); color: var(--accent-fg); }
 .ch-chevron { flex: none; color: var(--muted); font-size: 22px; line-height: 1; transition: transform .15s ease; }
 .ch-chevron--open { transform: rotate(90deg); }
 
@@ -73,7 +73,7 @@ export const CSS = `
   background: color-mix(in srgb, var(--text) 22%, transparent); cursor: pointer; padding: 0;
   transition: background .15s ease; }
 .ch-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
-  border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s ease; }
+  border-radius: 50%; background: var(--accent-fg); box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s ease; }
 .ch-switch[aria-checked="true"] { background: var(--accent-fill, var(--accent)); }
 .ch-switch[aria-checked="true"]::after { transform: translateX(18px); }
 .ch-switch:disabled { opacity: .5; cursor: default; }
@@ -118,16 +118,16 @@ export const CSS = `
 .ch-input { width: 100%; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border);
   background: var(--bg); color: var(--text); font: inherit; font-size: 16px; outline: none; }
 .ch-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.ch-input--ok { border-color: var(--green, #2fa866); }
+.ch-input--ok { border-color: var(--green); }
 .ch-input--bad { border-color: var(--danger); }
 .ch-check { margin: -4px 0 0; color: var(--muted); font-size: 12.5px; }
-.ch-check--ok { color: var(--green-text, var(--green, #2fa866)); }
+.ch-check--ok { color: var(--green-text, var(--green)); }
 .ch-check--bad { color: var(--danger-text, var(--danger)); }
 
 .ch-notice { padding: 10px 12px; border-radius: 10px; font-size: 13.5px; line-height: 1.45;
   background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
 .ch-notice--bad { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); color: var(--danger-text, var(--danger)); }
-.ch-notice--ok { background: color-mix(in srgb, var(--green, #2fa866) 12%, var(--surface)); }
+.ch-notice--ok { background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
 .ch-confirm { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border)); }
 .ch-confirm p { margin: 0; font-size: 13.5px; }
